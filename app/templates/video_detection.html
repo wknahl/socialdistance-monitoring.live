@@ -1,0 +1,102 @@
+{% extends "based.html" %}
+{% block content %}
+<div class="card card-primary card-outline">
+    <div class="card-header">
+      <h4 class="card-title">Video Detection</h4>
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+          <i class="fas fa-minus"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-body text-center">
+    <img id="img-target" class="img-fluid mx-auto d-block" src="{{ url_for('main.streamread') }}" width="600" height="300" alt="Photo">  
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer text-center">
+    <button id="start" onclick="start()" type="button" class="btn btn-outline-primary">Start Detecting</button>
+    |||
+    <button id="stop" onclick="stop()" type="button" class="btn btn-outline-danger">Stop Detecting</button>
+    </div>
+    </div>
+    <!-- /.card-footer-->
+{% endblock %}
+{% block custom_js %}
+    <script>
+        $(document).ready(function(){
+            // toastr.error('more than 2 people !');
+            $('#image-detector').attr('class', 'nav-item');
+            $('#live').attr('class', 'nav-item active');
+            document.querySelector("#counter").innerText = "2";
+        })
+        
+            function stop(){
+                $("#img-target").attr("src", "/static/images/socialdistance.jpg");
+                $("#stop").attr("class","btn btn-danger active");
+        
+                $("#start").attr("class","btn btn-outline-primary");
+                document.querySelector("#counter").innerText = "2";
+            }
+            function start(){
+                $("#img-target").attr("src", "{{url_for('main.streamread')}}");
+                $("#start").attr("class","btn btn-primary active");
+        
+                $("#stop").attr("class","btn btn-outline-danger");
+                document.querySelector("#counter").innerText = "0";
+            }
+            
+            var eventSource = new EventSource("/listen")
+            var waitings = false;
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            eventSource.addEventListener("message", function(e) {
+              console.log(e.data)
+            }, true)
+        
+            eventSource.addEventListener("online", function(e) {
+              // console.log(e.data.color)
+              var checkStop = document.querySelector("#counter").innerText;
+              console.log(checkStop);
+              if (checkStop == "2")
+              {
+                  data.counter = "0";
+              }
+              else{
+                data = JSON.parse(e.data)
+                document.querySelector("#counter").innerText = data.counter
+                document.querySelector("body").style.backgroundColor= data.color
+              }
+              if (data.counter == "1"){
+                toastr.error('more than 2 people !');
+                // toastr.warning('asdasd <img src="https://image.flaticon.com/icons/svg/34/34579.svg" style="width:50px;">', 'Toast Image');
+                // toastr.info('<img src="https://image.flaticon.com/icons/svg/34/34579.svg" style="width:150px;">', 'Toast Image')
+              }
+              else{
+                // sleep(5000).then(() => { toastr.clear(); });
+                console.log('tidak lebih dari 2');
+              }
+            }, true)
+        </script>
+        
+        <script>
+            toastr.options = {
+          "closeButton": false,
+          "debug": false,
+          "newestOnTop": true,
+          "progressBar": false,
+          "positionClass": "toast-top-full-width",
+          "preventDuplicates": true,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "5000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+            }
+        </script>
+{% endblock %}

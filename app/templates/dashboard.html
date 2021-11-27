@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SDMS</title>
+<!-- add icon link -->
+<link rel="icon" href="{{ url_for('static', filename='dist/img/pnj_logo.png') }}" type="image/x-icon">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/adminlte.min.css') }}">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" 
+            integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" >
+</head>
+<body class="hold-transition layout-top-nav">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+    <div class="container">
+      <a href="#" class="navbar-brand">
+        <img src="{{ url_for('static', filename='dist/img/pnj_logo.png') }}" alt="PNJ Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">Social Distance Monitoring</span>
+      </a>
+
+      <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+
+      <!-- Right navbar links -->
+      <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+        
+        <!-- Notifications Dropdown Menu -->
+        
+        <li class="nav-item">
+          <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+            <!-- <i class="fas fa-th-large"></i> -->
+            <i>Live Detection</i>
+          </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+              <!-- <i class="fas fa-th-large"></i> -->
+              <i>Video Detection</i>
+            </a>
+          </li>
+      </ul>
+    </div>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0"></h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Layout</a></li>
+              <li class="breadcrumb-item active">Top Navigation</li> -->
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container">
+        
+        <div class="card card-primary card-outline">
+          <div class="card-header">
+            <h4 class="card-title">Form Detection</h4>
+            {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body text-center">
+            <div hidden="true" id="counter"></div>
+          <img id="img-target" class="img-fluid mx-auto d-block" src="{{ url_for('static', filename='dist/img/socialdistance.jpg') }}" width="700" height="600">  
+
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer text-center">
+          <button id="start" onclick="start()" type="button" class="btn btn-outline-primary">Start Detecting</button>
+          |||
+          <button id="stop" onclick="stop()" type="button" class="btn btn-outline-danger">Stop Detecting</button>
+          </div>
+          </div>
+          <!-- /.card-footer-->
+
+        </div>
+        <br>
+      </div><!-- /.container-fluid -->
+    </div>
+    
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer text-center">
+    <!-- Default to the left -->
+    <strong><small>Developed with</small> &hearts; <small>by Waheed Khoi.</small></strong>
+  </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+<!-- jQuery -->
+<!-- <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='dist/js/adminlte.min.js') }}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+
+
+<script>
+    $(document).ready(function(){
+        // toastr.error('more than 2 people !');
+        $('#image-detector').attr('class', 'nav-item');
+        $('#live').attr('class', 'nav-item active');
+        document.querySelector("#counter").innerText = "2";
+    })
+    
+        function stop(){
+            $("#img-target").attr("src", "/static/images/socialdistance.jpg");
+            $("#stop").attr("class","btn btn-danger active");
+    
+            $("#start").attr("class","btn btn-outline-primary");
+            document.querySelector("#counter").innerText = "2";
+        }
+        function start(){
+            $("#img-target").attr("src", "{{url_for('main.video_feed')}}");
+            $("#start").attr("class","btn btn-primary active");
+    
+            $("#stop").attr("class","btn btn-outline-danger");
+            document.querySelector("#counter").innerText = "0";
+        }
+        
+        var eventSource = new EventSource("/listen")
+        var waitings = false;
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        eventSource.addEventListener("message", function(e) {
+          console.log(e.data)
+        }, true)
+    
+        eventSource.addEventListener("online", function(e) {
+          // console.log(e.data.color)
+          var checkStop = document.querySelector("#counter").innerText;
+          console.log(checkStop);
+          if (checkStop == "2")
+          {
+              data.counter = "0";
+          }
+          else{
+            data = JSON.parse(e.data)
+            document.querySelector("#counter").innerText = data.counter
+            document.querySelector("body").style.backgroundColor= data.color
+          }
+          if (data.counter == "1"){
+            toastr.error('Pelanggaran Jarak Aman!');
+            // toastr.warning('asdasd <img src="https://image.flaticon.com/icons/svg/34/34579.svg" style="width:50px;">', 'Toast Image');
+            // toastr.info('<img src="https://image.flaticon.com/icons/svg/34/34579.svg" style="width:150px;">', 'Toast Image')
+          }
+          else{
+            // sleep(5000).then(() => { toastr.clear(); });
+            console.log('--');
+          }
+        }, true)
+    </script>
+    
+    <script>
+        toastr.options = {
+      "closeButton": false,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": false,
+      "positionClass": "toast-top-full-width",
+      "preventDuplicates": true,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+        }
+    </script>
+</body>
+</html>

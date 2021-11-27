@@ -1,0 +1,135 @@
+{% extends "template.html" %}
+{% block content %}
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-12">
+            <h1>Welcome to the mask detector live</h1>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="container-fluid">
+        <div id="frame_container" class="row">
+            <div hidden="true" id="counter"></div>
+            <div class="col-12">
+                <img src="{{ url_for('main.streamlocal') }}"
+                     class="img-thumbnail img-fluid mx-auto d-block">
+            </div>
+        </div>
+        <div class="row mt-3 mb-5">
+            <div class="col-6 d-flex justify-content-end">
+                <button id="start" onclick="start()" class="btn btn-outline-success"><i class="fa fa-video-camera"
+                                                                                        aria-hidden="true"></i> Start
+                </button>
+            </div>
+            <div class="col-6 d-flex justify-content-start">
+                <button id="stop" onclick="stop()" class="btn btn-danger active"><i class="fa fa-stop"
+                                                                                    aria-hidden="true"></i> Stop
+                </button>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <h4>What is this?</h4>
+        </div>
+        <div class="row">
+            <p>This is a mask detector, an algorithm based on deep neural networks that detects people through your
+                camera and write a bounding box around faces,
+                looking if they were masks or not. This is not for security purpose.</p>
+            <p>If you are interested in more details, check this post I wrote!</p>
+        </div>
+        <div class="row">
+            <h4>Who I am</h4>
+        </div>
+        <div class="row mb-5">
+            <p>I'm Galileo Parise, data scientist and matematician, and I've developed what you see during Italy's
+                second lockdown in November, in which I had lots of free time. If you are interested in this and ohter
+                stories,
+                you can follow me on Linkedin and on Medium.
+                Hoping to get soon over this situation,
+                I hope you all good health:</p>
+            <p class="d-flex mx-auto lead text-danger"><strong>please, stay safe and wear a mask</strong>.</p>
+            <p></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block custom_js %}
+<script>
+$(document).ready(function(){
+    // toastr.error('more than 2 people !');
+    $('#image-detector').attr('class', 'nav-item');
+    $('#live').attr('class', 'nav-item active');
+    document.querySelector("#counter").innerText = "2";
+})
+
+    function stop(){
+        $("img").attr("src", "/static/images/stay-safe.jpg");
+        $("#stop").attr("class","btn btn-danger active");
+
+        $("#start").attr("class","btn btn-outline-success");
+        document.querySelector("#counter").innerText = "2";
+    }
+    function start(){
+        $("img").attr("src", "{{url_for('main.streamlocal')}}");
+        $("#start").attr("class","btn btn-success active");
+
+        $("#stop").attr("class","btn btn-outline-danger");
+        document.querySelector("#counter").innerText = "0";
+    }
+    
+    var eventSource = new EventSource("/listen")
+    var waitings = false;
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    eventSource.addEventListener("message", function(e) {
+      console.log(e.data)
+    }, true)
+
+    eventSource.addEventListener("online", function(e) {
+      // console.log(e.data.color)
+      var checkStop = document.querySelector("#counter").innerText;
+      console.log(checkStop);
+      if (checkStop == "2")
+      {
+          data.counter = "0";
+      }
+      else{
+        data = JSON.parse(e.data)
+        document.querySelector("#counter").innerText = data.counter
+        document.querySelector("body").style.backgroundColor= data.color
+      }
+      if (data.counter == "1"){
+        toastr.error('more than 2 people !');
+        // toastr.warning('asdasd <img src="https://image.flaticon.com/icons/svg/34/34579.svg" style="width:50px;">', 'Toast Image');
+        // toastr.info('<img src="https://image.flaticon.com/icons/svg/34/34579.svg" style="width:150px;">', 'Toast Image')
+      }
+      else{
+        // sleep(5000).then(() => { toastr.clear(); });
+        console.log('tidak lebih dari 2');
+      }
+    }, true)
+</script>
+
+<script>
+    toastr.options = {
+  "closeButton": false,
+  "debug": false,
+  "newestOnTop": true,
+  "progressBar": false,
+  "positionClass": "toast-top-full-width",
+  "preventDuplicates": true,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "5000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+    }
+</script>
+
+{% endblock %}
